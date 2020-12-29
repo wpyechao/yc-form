@@ -1,0 +1,31 @@
+{
+  "name": "yc-form",
+  "version": "0.0.1",
+  "description": "form",
+  "main": "index.js",
+  "scripts": {
+    "start": "dumi dev",
+    "build": "father-build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "form"
+  ],
+  "author": "pingyechao",
+  "license": "ISC",
+  "dependencies": {
+    "antd": "^3.26.18",
+    "dumi": "^1.0.33",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2",
+    "yc-hooks": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/lodash.get": "^4.4.6",
+    "@types/lodash.set": "^4.3.6",
+    "eslint-config-pyc": "^1.0.0",
+    "father-build": "^1.18.1",
+    "react": "^16.13.1"
+  }
+}
