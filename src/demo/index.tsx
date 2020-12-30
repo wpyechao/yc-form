@@ -30,6 +30,10 @@ export default () => {
     console.log(form.getFieldValue('name2'))
   }
 
+  const resetFields = () => {
+    form.resetFields()
+  }
+
   const toggleInitialValue = () => {
     setInitialValue({ 
       name1: Date.now().toString(), 
@@ -50,14 +54,18 @@ export default () => {
         <Button style={marginBottom8} block htmlType="submit">提交</Button>
         <Button style={marginBottom8} block onClick={setFields}>set fields</Button>
         <Button style={marginBottom8} block onClick={getField}>get field value</Button>
+        <Button style={marginBottom8} block onClick={resetFields}>reset fields</Button>
         <Button style={marginBottom8} block onClick={toggleInitialValue}>toggle initialValue</Button>
       </div>
       <Divider />
-      <Field label={`姓名`} name={`name`} initialValue={ini}>
+      <Field label={`姓名`} name={`name`} initialValue={ini} rules={[{ validator: (_, __, c) => c('fk1') }, { validator: (_, __, c) => c('fk2') }]}>
+        <Input />
+      </Field>
+      <Field label={`blur trigger`} name={`trigger`} validateTrigger="onBlur" rules={[{ validator: (_, __, c) => c('fk1') }, { validator: (_, __, c) => c('fk2') }]}>
         <Input />
       </Field>
       {Array(100).fill('').map((_, i) => (
-        <Field label={`姓名${i}`} key={i} name={`name${i}`}>
+        <Field label={`姓名${i}`} key={i} name={`name${i}`} rules={[{ required: true, message: 'fucking required' }]}>
           <Input />
         </Field>
       ))}

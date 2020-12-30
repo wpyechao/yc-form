@@ -26,7 +26,9 @@ const Form: React.FC<TFormProps> = (props) => {
   const handleSubmit = usePersistFn((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const values = formInstance.getFieldsValue()
-    onSubmit?.(values)
+    if(onSubmit) {
+      onSubmit(values)
+    }
   })
 
   React.useEffect(() => {
@@ -34,7 +36,7 @@ const Form: React.FC<TFormProps> = (props) => {
   }, [initialValues])
 
   return (
-    <FormProvider value={{ subscribe, setFieldsChanged, getFieldChanged }}>
+    <FormProvider value={{ subscribe, setInitialValue, setFieldsChanged, getFieldChanged }}>
       <AntdForm onSubmit={handleSubmit}>
         {children}
       </AntdForm>
@@ -42,4 +44,4 @@ const Form: React.FC<TFormProps> = (props) => {
   )
 }
 
-export default Form
+export default React.memo(Form)

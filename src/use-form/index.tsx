@@ -70,6 +70,13 @@ class FormStore {
     this.setFieldsValue(this.initialValues)
   }
 
+  /** 校验 fields */
+  private validateFields: TFormInstance['validateFields'] = (fieldNames) => {
+    return new Promise((resolve, reject) => {
+
+    })
+  }
+
   /** 获取一个field 是否已经手动触发过 */
   private getFieldChanged = (name: string) => {
     return !!this.fieldsChanged[name]
@@ -84,7 +91,10 @@ class FormStore {
         setFieldsChanged: (name, changed) => this.fieldsChanged[name] = changed,
         getFieldChanged: this.getFieldChanged,
         setInitialValue: (initialValues) => {
-          this.initialValues = initialValues
+          this.initialValues = {
+            ...this.initialValues,
+            ...initialValues,
+          }
           Object.keys(initialValues || {}).forEach((key) => {
             if(!this.getFieldChanged(key)) {
               this.notifyField(key, initialValues[key])
@@ -103,6 +113,7 @@ class FormStore {
       getFieldsValue: this.getFieldsValue,
       setFieldsValue: this.setFieldsValue,
       resetFields: this.resetFields,
+      validateFields: this.validateFields,
       getInternalCallbacks: this.getInternalCallbacks
     }
   }

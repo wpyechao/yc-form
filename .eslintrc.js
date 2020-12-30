@@ -9,5 +9,6 @@ module.exports = {
         aspects: ['invalidHref'],
       },
     ],
+    'react-hooks/exhaustive-deps': 'off'
   }
 }

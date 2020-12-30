@@ -4,12 +4,8 @@ export type TFormInstance = {
   getFieldsValue: () => any,
   setFieldsValue: (values: any) => void
   resetFields: () => void
-  getInternalCallbacks?: (mark?: string) => {
-    subscribe: TSubscribe,
-    setFieldsChanged: (name: string, changed: boolean) => void,
-    getFieldChanged: (name: string) => boolean
-    setInitialValue: (initialValue: any) => void
-  }
+  validateFields: (names?: string[]) => Promise<void>
+  getInternalCallbacks?: (mark?: string) => TContextValue
 }
 
 /** field 订阅的方法 */
@@ -18,6 +14,7 @@ export type TSubscribe = (subscriber: TSubscriber<any>) => () => void
 /** context 里的值 */
 export type TContextValue = {
   subscribe: TSubscribe,
+  setInitialValue: (initialValue: any) => void
   setFieldsChanged: (name: string, changed: boolean) => void
   getFieldChanged: (name: string) => boolean
 }
@@ -28,3 +25,5 @@ export type TSubscriber<T> = {
   state: T,
   setState: (state: T) => void
 }
+
+export type TValidateStatus = 'success' | 'warning' | 'error' | 'validating';
