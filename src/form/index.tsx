@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { usePersistFn } from 'yc-hooks';
+import { Form as AntdForm } from 'antd'
 import { FormProvider } from '../context'
 import { TFormInstance } from '../types';
 import useForm, { INTERNAL_MARK } from '../use-form';
@@ -18,8 +19,8 @@ const Form: React.FC<TFormProps> = (props) => {
   const { 
     subscribe, 
     setInitialValue, 
-    getFieldsChanged,
     setFieldsChanged,
+    getFieldChanged,
   } = formInstance.getInternalCallbacks(INTERNAL_MARK)
 
   const handleSubmit = usePersistFn((e: React.FormEvent<HTMLFormElement>) => {
@@ -29,18 +30,14 @@ const Form: React.FC<TFormProps> = (props) => {
   })
 
   React.useEffect(() => {
-    const fieldChanged = getFieldsChanged()
-
-    if(!fieldChanged) {
-      setInitialValue(initialValues)
-    }
+    setInitialValue(initialValues)
   }, [initialValues])
 
   return (
-    <FormProvider value={{ subscribe, setFieldsChanged, }}>
-      <form onSubmit={handleSubmit}>
+    <FormProvider value={{ subscribe, setFieldsChanged, getFieldChanged }}>
+      <AntdForm onSubmit={handleSubmit}>
         {children}
-      </form>
+      </AntdForm>
     </FormProvider>
   )
 }

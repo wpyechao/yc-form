@@ -13,7 +13,7 @@ class FormStore {
   private initialValues: any = null
 
   /** 是否有field 手动触发过了 */
-  private fieldsChanged: boolean = false
+  private fieldsChanged: { [key: string]: boolean } = {}
 
   constructor() {
     this.Subscribers = new Set()
@@ -30,14 +30,12 @@ class FormStore {
 
   /** 通知field 进行更新 */
   private notifyField = (name: string, state: any) => {
-    let field: TSubscriber<any> = null
-    this.Subscribers.forEach((s) => {
+    for (const s of this.Subscribers) {
       if(s.name === name) {
-        field = s
+        s.setState(state)
+        return
       }
-    })
-    if(field)
-      field.setState(state)
+    }
   }
 
   /** 获取单个name的value */
@@ -72,19 +70,26 @@ class FormStore {
     this.setFieldsValue(this.initialValues)
   }
 
+  /** 获取一个field 是否已经手动触发过 */
+  private getFieldChanged = (name: string) => {
+    return !!this.fieldsChanged[name]
+  }
+
   /** 获取内部的一些方法， 只能在内部调用 */
   private getInternalCallbacks: TFormInstance['getInternalCallbacks'] = (mark) => {
     // 内部调用传入 mark
     if(mark === INTERNAL_MARK) {
       return {
         subscribe: this.subscribe,
-        getFieldsChanged: () => this.fieldsChanged,
-        setFieldsChanged: (changed) => this.fieldsChanged = changed,
+        setFieldsChanged: (name, changed) => this.fieldsChanged[name] = changed,
+        getFieldChanged: this.getFieldChanged,
         setInitialValue: (initialValues) => {
-          if(!this.fieldsChanged) {
-            this.initialValues = initialValues
-            this.setFieldsValue(initialValues)
-          }
+          this.initialValues = initialValues
+          Object.keys(initialValues || {}).forEach((key) => {
+            if(!this.getFieldChanged(key)) {
+              this.notifyField(key, initialValues[key])
+            }
+          })
         }
       }
     }

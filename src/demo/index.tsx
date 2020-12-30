@@ -2,7 +2,7 @@ import * as React from 'react';
 import Form from '../form'
 import Field from '../field'
 import useForm from '../use-form';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Input } from 'antd';
 
 const marginBottom8: React.CSSProperties = {
   marginBottom: 8
@@ -37,6 +37,13 @@ export default () => {
     })
   }
 
+  const [ini, set] = React.useState(void 0)
+  React.useEffect(() => {
+    setTimeout(() => {
+      set('pingyechao')
+    }, 1000);
+  }, [])
+
   return (
     <Form initialValues={initialValue} form={form} onSubmit={handleSubmit}>
       <div>
@@ -46,8 +53,13 @@ export default () => {
         <Button style={marginBottom8} block onClick={toggleInitialValue}>toggle initialValue</Button>
       </div>
       <Divider />
-      {Array(1000).fill('').map((_, i) => (
-        <Field key={i} name={`name${i}`} />
+      <Field label={`姓名`} name={`name`} initialValue={ini}>
+        <Input />
+      </Field>
+      {Array(100).fill('').map((_, i) => (
+        <Field label={`姓名${i}`} key={i} name={`name${i}`}>
+          <Input />
+        </Field>
       ))}
     </Form>
   )

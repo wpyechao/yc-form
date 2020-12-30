@@ -6,8 +6,8 @@ export type TFormInstance = {
   resetFields: () => void
   getInternalCallbacks?: (mark?: string) => {
     subscribe: TSubscribe,
-    getFieldsChanged: () => boolean,
-    setFieldsChanged: (changed: boolean) => void,
+    setFieldsChanged: (name: string, changed: boolean) => void,
+    getFieldChanged: (name: string) => boolean
     setInitialValue: (initialValue: any) => void
   }
 }
@@ -18,7 +18,8 @@ export type TSubscribe = (subscriber: TSubscriber<any>) => () => void
 /** context 里的值 */
 export type TContextValue = {
   subscribe: TSubscribe,
-  setFieldsChanged: (changed: boolean) => void
+  setFieldsChanged: (name: string, changed: boolean) => void
+  getFieldChanged: (name: string) => boolean
 }
 
 /** 每个订阅总表单的field需要暴露的值 */
