@@ -18,9 +18,9 @@ export default () => {
 
   const setFields = () => {
     form.setFieldsValue({
-      name3: 'asdads',
-      name4: 'dkdkdkadwd128',
-      name5: 'kjansdkjnad'
+      name2: 'asdads',
+      name3: 'dkdkdkadwd128',
+      name4: 'kjansdkjnad'
     })
   }
 
@@ -59,11 +59,11 @@ export default () => {
       <Field label={`姓名`} name={`name`} initialValue={ini} rules={[{ required: true }]}>
         <Input />
       </Field>
-      <Field label={`blur trigger`} name={`trigger`} validateTrigger="onBlur" rules={[{ required: true }, { len: 5 }]}>
+      <Field label={`blur trigger`} name={`a`} validateTrigger="onBlur" rules={[{ required: true }, { len: 5 }]}>
         <Input />
       </Field>
-      {Array(5).fill('').map((_, i) => (
-        <Field label={`姓名${i}`} key={i} name={`name${i}`} rules={[{ required: true, message: 'fucking required' }]}>
+      {Array(1000).fill('').map((_, i) => (
+        <Field label={`姓名${i}`} key={i} name={`name${i}`}>
           <Input />
         </Field>
       ))}
