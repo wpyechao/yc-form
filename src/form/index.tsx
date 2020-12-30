@@ -25,10 +25,11 @@ const Form: React.FC<TFormProps> = (props) => {
 
   const handleSubmit = usePersistFn((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const values = formInstance.getFieldsValue()
-    if(onSubmit) {
-      onSubmit(values)
-    }
+    formInstance.validateFields().then(values => {
+      if(onSubmit) {
+        onSubmit(values)
+      }
+    })
   })
 
   React.useEffect(() => {
@@ -44,4 +45,4 @@ const Form: React.FC<TFormProps> = (props) => {
   )
 }
 
-export default React.memo(Form)
+export default Form

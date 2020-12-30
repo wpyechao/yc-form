@@ -1,7 +1,5 @@
 import * as React from 'react';
-import Form from '../form'
-import Field from '../field'
-import useForm from '../use-form';
+import Form, { useForm, Field } from '..'
 import { Button, Divider, Input } from 'antd';
 
 const marginBottom8: React.CSSProperties = {
@@ -58,13 +56,13 @@ export default () => {
         <Button style={marginBottom8} block onClick={toggleInitialValue}>toggle initialValue</Button>
       </div>
       <Divider />
-      <Field label={`姓名`} name={`name`} initialValue={ini} rules={[{ validator: (_, __, c) => c('fk1') }, { validator: (_, __, c) => c('fk2') }]}>
+      <Field label={`姓名`} name={`name`} initialValue={ini} rules={[{ required: true }]}>
         <Input />
       </Field>
-      <Field label={`blur trigger`} name={`trigger`} validateTrigger="onBlur" rules={[{ validator: (_, __, c) => c('fk1') }, { validator: (_, __, c) => c('fk2') }]}>
+      <Field label={`blur trigger`} name={`trigger`} validateTrigger="onBlur" rules={[{ required: true }, { len: 5 }]}>
         <Input />
       </Field>
-      {Array(100).fill('').map((_, i) => (
+      {Array(5).fill('').map((_, i) => (
         <Field label={`姓名${i}`} key={i} name={`name${i}`} rules={[{ required: true, message: 'fucking required' }]}>
           <Input />
         </Field>

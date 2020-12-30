@@ -1,3 +1,5 @@
+import { ValidationRule } from "antd/lib/form";
+
 /** form 工具方法，类似antd */
 export type TFormInstance = {
   getFieldValue: (name: string) => any
@@ -24,6 +26,10 @@ export type TSubscriber<T> = {
   name: string,
   state: T,
   setState: (state: T) => void
+  validation: {
+    rules: ValidationRule[]
+    setStatus: (status: { status: TValidateStatus, explain?: string }) => void
+  }
 }
 
 export type TValidateStatus = 'success' | 'warning' | 'error' | 'validating';

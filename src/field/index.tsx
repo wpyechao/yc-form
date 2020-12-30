@@ -14,7 +14,7 @@ Omit<GetFieldDecoratorOptions, 'getValueProps' | 'normalize' | 'preserve' | 'tri
 }
 
 const ExplainStyle: React.CSSProperties = {
-  transition: 'all .2s',
+  transition: 'all .2s ease-out',
   position: 'absolute',
   left: 0,
   right: 0,
@@ -40,9 +40,12 @@ const Field: React.FC<IFieldProps> = (props) => {
 
   const { subscribe, setFieldsChanged, getFieldChanged, setInitialValue } = useFormContext()
 
-  const [validateStatus, setValidateStatus] = React.useState<TValidateStatus>('success')
+  const [validateStatus, setValidateStatus] = React.useState<{ status: TValidateStatus, explain?: string}>({
+    status: 'success',
+    explain: void 0
+  })
 
-  const [explain, setExplain] = React.useState<string>(void 0)
+  const { explain, status } = validateStatus
 
   const [state, setState] = React.useState(void 0)
 
@@ -73,7 +76,11 @@ const Field: React.FC<IFieldProps> = (props) => {
     const unsubscribe = subscribe({
       name,
       state,
-      setState
+      setState,
+      validation: {
+        rules,
+        setStatus: setValidateStatus
+      },
     })
 
     return () => {
@@ -94,40 +101,45 @@ const Field: React.FC<IFieldProps> = (props) => {
   })
 
   const validate = usePersistFn((value: any) => {
-    setFieldsChanged(name, true)
     const validator = new Validator({
       [name]: rules || []
     })
 
     validator.validate({ [name]: value }).then(() => {
-      setValidateStatus('success')
+      setValidateStatus((s) => ({ ...s, status: 'success' }))
     }).catch(({ errors }) => {
-      setExplain(() => {
+      setValidateStatus(() => {
         if(validateFirst) {
-          return errors[0]?.message
+          return {
+            status: 'error',
+            explain: errors[0].message
+          }
         }
-        return errors.map(error => error.message).join(' ')
+        return {
+          status: 'error',
+          explain: errors.map(error => error.message).join(' ')
+        }
       })
-      setValidateStatus('error')
     })
   })
 
   const classNames = classnames(className, {
-    'has-success': validateStatus === 'success',
-    'has-warning': validateStatus === 'warning',
-    'has-error': validateStatus === 'error',
-    'is-validating':  validateStatus === 'validating',
+    'has-success': status === 'success',
+    'has-warning': status === 'warning',
+    'has-error': status === 'error',
+    'is-validating':  status === 'validating',
   })
 
   const renderExplain = () => {
     const transitionStyles = {
       entering: { transform: 'translateY(-5px)', opacity: '0'},
       entered:  { transform: 'translateY(0)', opacity: '1' },
-      exiting: { transform: 'translateY(0)', opacity: '1'},
-      exited: { transform: 'translateY(-5px)', opacity: '0'}
+      exiting: { transform: 'translateY(-5px)', opacity: '0'},
+      exited: { transform: 'translateY(-5px)', opacity: '0'},
     }
+
     return (
-      <Transition in={validateStatus === 'error'} timeout={200}>
+      <Transition unmountOnExit in={status === 'error'} timeout={200}>
         {state => (
           <div style={{...ExplainStyle, ...transitionStyles[state]}} className="ant-form-explain">
             {explain}
@@ -150,7 +162,7 @@ const Field: React.FC<IFieldProps> = (props) => {
   )
 }
 
-export default React.memo(Field)
+export default Field
 
 function defaultGetValueFromEvent(e: any) {
   if (!e || !e.target) {

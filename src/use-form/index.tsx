@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TFormInstance, TSubscriber } from '../types';
 import set from 'lodash.set'
+import Validator from 'async-validator'
 
 /** internal mark */
 export const INTERNAL_MARK = 'INTERNAL_MARK'
@@ -73,7 +74,34 @@ class FormStore {
   /** 校验 fields */
   private validateFields: TFormInstance['validateFields'] = (fieldNames) => {
     return new Promise((resolve, reject) => {
+      const descriptor = {}
+      for (const subscriber of this.Subscribers) {
+        const { name, validation: { rules } } = subscriber
+        descriptor[name] = rules || []
+      }
+      const validate = new Validator(descriptor)
+      const values = this.getFieldsValue()
 
+      validate.validate(values).then((res) => {
+        console.log(values)
+      }).catch(err => {
+        if(process.env.NODE_ENV !== 'production') {
+          console.error(err);
+        }
+        err.errors.forEach(error => {
+          const { field, message } = error
+          for (const subscriber of this.Subscribers) {
+            const { name, validation: { setStatus } } = subscriber
+            if(name === field) {
+              setStatus({
+                status: 'error',
+                explain: message
+              })
+              return
+            }
+          }
+        })
+      })
     })
   }
 
