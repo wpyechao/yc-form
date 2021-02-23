@@ -82,9 +82,10 @@ class FormStore {
       const validate = new Validator(descriptor)
       const values = this.getFieldsValue()
 
-      validate.validate(values).then((res) => {
-        console.log(values)
+      validate.validate(values).then(() => {
+        resolve(values)
       }).catch(err => {
+        reject(err)
         if(process.env.NODE_ENV !== 'production') {
           console.error(err);
         }
